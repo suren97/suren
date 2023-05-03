@@ -1,0 +1,19 @@
+1.Designing the given screenshot Design using html and css
+2.Todo App in React Applications using Redux
+3.Creating an Application contains two pages with Redux having own set of data on each page
+4..Creating an Application which contains multistep form validation with progress bar
+
+Project Tasks:
+--------------------------------
+1.VesselGM set the default value at the top of table and remove the empty data inside the datatable
+2.Export PDF and Excel with window.showSaveFilePicker()
+
+
+
+Others:
+-------------------------------------
+ReplaceReducers
+DOM event
+Add Checkbox Enable and disbable
+ExcelFile Reader in Local
+

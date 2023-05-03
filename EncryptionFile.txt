@@ -1,0 +1,74 @@
+//USage:Naama download panum podhu file location kamikum
+import { AES, enc } from 'crypto-js';
+
+const savePlan=async e =>{
+
+//Encryption
+let body=[{voyage:"DTX"},{voyage:"TTX"},{voyage:"AMD"},{voyage:"CHE"},{voyage:"TMX"}];  // Plan JSON Objects
+const fileName = 'Plan'; // filename for saving file
+const encrypted_data=AES.encrypt(JSON.stringify(body),'SecretKey').toString(); //
+---------------------------------------------------------------------------------------
+//Using Window Object
+
+ if ('showSaveFilePicker' in window) {
+            //   // Use the showSaveFilePicker API if available
+        
+              const options = {
+        
+               suggestedName: 'Plan.json', // default file name
+        
+               types: [
+        
+                {
+        
+                 description: 'JSON file',
+        
+                 accept: {
+        
+                  'application/json': ['.json'],
+        
+                 },
+        
+                },
+        
+               ],
+        
+              };
+        
+              const handle = await window.showSaveFilePicker(options); // ethuthan File save panrathuku file location window display panum
+        
+              const writable = await handle.createWritable(); // Oru new sheet onu create Panrom antha sheet la write panrom
+        
+              await writable.write(encrypted_data); // Create pana sheet la encrypted data insert panrom
+        
+              await writable.close();  // Write pana sheet ai close panrom
+        
+            }
+			
+
+}
+
+ 
+------------------------------------------------------------------------------------------
+//Mela ulathu browser support panum browser panalana kela ulathu support akum
+
+
+else {
+        
+              const blob = new Blob([encrypted_data], { type: 'application/json' }); // Ethu nama encrypt data vai blob (binary object) convert panum
+			  
+              const url = await URL.createObjectURL(blob); // create pana blob ai url ah create panuvom
+        
+              const link = document.createElement('a'); // DOM ah vechi anchor tag ah create panuvom
+        
+              link.download = fileName + '.json'; // anchor tag il download attribute ai set panrom
+        
+              link.href = url; // anchor tag la href attribute la nama create pana url ah pass panrom
+        
+              document.body.appendChild(link); // ethu body tag la kadaisila add panum
+        
+              link.click(); // click set panal than nama file download akum
+        
+              document.body.removeChild(link); // download ana apram DOM la erunthu anchor tag ah remove panrom
+        
+}

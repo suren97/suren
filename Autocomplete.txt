@@ -1,0 +1,98 @@
+import { TextField,Autocomplete,Box,Select,Divider,MenuItem } from "@mui/material";
+import { forwardRef, useCallback, useEffect } from "react";
+import {useState,useMemo} from "react";
+
+function AutoComplete_Comp(props)
+{
+ const optionRef=[
+    {label:"ss",value:1},
+    {label:"sssjnj",value:2},
+    {label:"fhbh",value:3},
+    {label:"jejfdje",value:4}
+ ];
+ const [yearopt,setyear]=useState([]);
+ const [nameopt,setname]=useState([]);
+
+ useEffect(()=>
+ {
+   if(props.data.select=="select")
+   {
+    let yeardata=[];
+       props.data.rows.map((v,i)=>
+       {
+         return yeardata.push(v);
+       })
+    setyear(yeardata);
+   }
+ },[]);
+
+ let handleselect=(e)=>
+ {
+  let second=[];
+   if(e.target.value==2000)
+   {
+    props.data.rows.map((v,i)=>
+    {
+      if(v.Year==e.target.value)
+      {
+        return second.push(v);
+      }
+    })
+   }
+   setname(second);
+ }
+
+let selection=useCallback(()=>
+{
+  return(
+    <div>
+    {props.data.select=="select" && props.colDef.field=="Year" ? (
+      <div>
+   <label>Select-1</label>
+    <Select
+    fullWidth
+    labelId="demo-simple-select-label"
+    label="Select"
+    id="demo-simple-select"
+    onChange={(e)=>handleselect(e)}
+    >
+      {yearopt && yearopt.map((v,i)=>
+      {
+        return <MenuItem value={v.Year}>{v.Year}</MenuItem>
+      })}
+    </Select>
+    </div>
+    ):(
+       props.value
+    )}
+    {props.data.select=="select" && props.colDef.field=="Name" ? (
+      <div>
+   <label>Select-1</label>
+    <Select
+    fullWidth
+    labelId="demo-simple-select-label-1"
+    label="Select"
+    id="demo-simple-select-1"
+    >
+      {nameopt && nameopt.map((v,i)=>
+      {
+        console.log(v)
+        return <MenuItem value={v.Name}>{v.Name}</MenuItem>
+      })}
+    </Select>
+    </div>
+    ):(
+     ""
+    )}
+    </div>
+  )
+},[]);
+
+  return (
+    <div>
+     {selection()}
+    </div>
+  )
+};
+
+export default AutoComplete_Comp;

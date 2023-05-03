@@ -1,0 +1,93 @@
+//showSaveFilePicker method for Saving Pdf
+
+let Exportpdf =async () => {
+    const doc = new jsPDF();
+
+    const bodyStyles = {
+      textColor: "#000",
+      lineColor: "#000",
+      lineWidth: 0.2,
+      cellWidth:"auto",
+    };
+    const headStyles = {
+      fontStyle: "bold",
+      halign:"left",
+      cellPadding:1,
+      cellWidth:"auto"
+    };
+
+    doc.setFontSize(12);
+    doc.text("SAMPLE PDF", 90, 10);
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1;
+    let dd = today.getDate();
+    doc.autoTable({
+      theme: "grid",
+      head: [],
+      body: [
+        ['Vessel:Toranto',"Date:2022"],
+        ["Voyage:Vishak","Terminal:Nicobar"],
+        ["Service:ST1","Bound:1"]
+      ],
+      startY:30,
+      margin:10,
+      bodyStyles
+    });
+    doc.line(10,58,200,58);
+    let pdfdata=rowdata.reduce((acc,curt)=>{ 
+      acc.push(Object.values(curt)) 
+      return acc  
+    },[]);
+
+    doc.autoTable({
+      theme: "plain",
+      head: [
+        [
+          "Athlete",
+          "Age",
+          "Country",
+          "Year",
+          "Date",
+          "Sport",
+          "Bronze",
+          "Silver",
+          "Gold",
+          "Total",
+        ],
+      ],
+      body: [...pdfdata],
+      bodyStyles: bodyStyles,
+      headStyles: headStyles,
+      didParseCell: function (data) {
+        if (data.row.raw.includes(2008)) {
+          data.cell.styles.fontStyle = "bold";
+          data.cell.styles.fillColor = [25, 118, 210];
+          data.cell.styles.textColor="white"
+        }
+      },
+      margin:10,
+    });
+
+  const PdfArrBuffer=doc.output("arraybuffer");
+
+  const options = {
+    suggestedName: "plan", // default file name
+
+    types: [
+      {
+        description: "PDF file",
+
+        accept: {
+          "application/pdf": [".pdf"],
+        },
+      },
+    ],
+  };
+
+  const handle = await window.showSaveFilePicker(options);
+  const writable = await handle.createWritable();
+  await writable.write(new Blob([PdfArrBuffer], { type: "application/pdf" })); //write data into file
+  await writable.close();
+
+};

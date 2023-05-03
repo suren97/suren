@@ -1,0 +1,138 @@
+import { Workbook } from "exceljs";
+import FileSaver from "file-saver";
+
+function ExcelJS()
+{
+const tankSequenceTemplateBodyDataArr=[
+    {
+        stankcategory:"3",
+        stankname:"Oil Tank",
+        maxper:51,
+        priority:"High"
+    },
+    {
+        stankcategory:"5",
+        stankname:"Fluid Tank",
+        maxper:13,
+        priority:"Low"
+    },
+    {
+        stankcategory:"15",
+        stankname:"Gas Tank",
+        maxper:43,
+        priority:"Medium"
+    }
+];
+
+const tankSequenceTemplateHeadersDataArr=[
+    {
+        header:"TankCategory",
+        key:"stankcategory",
+        width:20
+    },
+    {
+        header:"TankName",
+        key:"stankname",
+        width:20
+    },
+    {
+        header:"Utilization_Ratio",
+        key:"maxper",
+        width:20
+    },
+    {
+        header:"Priority",
+        key:"priority",
+        width:20
+    }
+];
+const tankSequenceWorksheetName = 'Tank Sequnce Template';
+const tankSequenceFileSaverName = 'Tank Sequence Template.xlsx'; 
+
+const DownloadExcelSingleTable=({headersDataArr,bodyDataArr,
+    worksheetName,fileSaverName,
+    headerBackgroundColor = '000099',
+    headerBorderTopColor = '000000',
+    headerBorderLeftColor = '000000',
+    headerBorderBottomColor = '000000',
+    headerBorderRightColor = '000000',
+    headerFontColor = 'ffffff',
+    bodyBorderTopColor="F08080",
+    headerFontSize = 13
+})=>
+{
+    console.log("Downloading...");
+    const workbook=new Workbook();
+    const worksheet = workbook.addWorksheet(worksheetName);
+    worksheet.columns=headersDataArr;
+
+    //Headers
+    const headerStyling=worksheet.getRow(1);
+    headerStyling.eachCell(item=>{
+        item.fill={
+            type:"pattern",
+            pattern:"solid",
+            fgColor:{argb:headerBackgroundColor}
+        };
+        item.border={
+             top:{style:'thin',color:{argb:headerBorderTopColor}},
+             left:{style:"thin",color:{argb:headerBorderLeftColor}},
+             bottom:{style:"thin",color:{argb:headerBorderBottomColor}},
+             right:{style:"thin",color:{argb:headerBorderRightColor}}
+        };
+        item.font={
+            color:{argb:headerFontColor},
+            size:headerFontSize
+        };
+        item.alignment={
+            vertical: 'left',
+            horizontal: 'left'
+        };
+    })
+    
+    //Body
+    bodyDataArr.forEach(obj=>{
+        worksheet.addRow(obj).alignment={
+            vertical:"left",
+            horizontal:"left"
+        }
+    })
+
+    workbook.xlsx.writeBuffer().then(async buffer => {  
+      const options = {
+        suggestedName: "Tank Sequnce Template",
+        types: [
+          {
+            description: "Excel file",
+            accept: {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                [".xlsx"],
+            },
+          },
+        ],
+      };
+      const handle=await window.showSaveFilePicker(options);
+      const writable=await handle.createWritable();
+      await writable.write(buffer);
+      await writable.close();
+    });
+
+//     Excel Js download using FileSaver
+//     workbook.xlsx.writeBuffer().then(buffer => {   
+//     const blob = new Blob([buffer], 
+//     {
+//         type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+//     })  
+//     FileSaver.saveAs(blob, fileSaverName); 
+//  })
+}
+
+const headerbgColor="525b62"
+
+const tankSequenceTemplateArgObj = { 
+    headersDataArr: tankSequenceTemplateHeadersDataArr,
+    bodyDataArr:tankSequenceTemplateBodyDataArr,      
+    worksheetName: tankSequenceWorksheetName,
+    fileSaverName: tankSequenceFileSaverName,
+    headerBackgroundColor:headerbgColor  
+};
