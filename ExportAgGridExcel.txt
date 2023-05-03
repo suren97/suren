@@ -1,0 +1,15 @@
+ //Exporting the Excel
+
+1.Exporting the Excel using default AgGrid method(exportDataAsExcel())
+ 
+ let ExportExcel=()=>
+ {
+    gridApi.exportDataAsExcel();  //Its is the default Built in method of gridApi which automatically downloads the excel file.
+ };
+
+----------------------------------------------------------------------------------------------------------------------------------------
+2.Exporting the Excel using window object showSaveFilePicker
+
+let ExportExcel=()=>
+{
+}

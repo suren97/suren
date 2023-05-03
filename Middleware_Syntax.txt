@@ -1,0 +1,18 @@
+Syntax:
+
+middleware:getDefaultMiddleware=>
+getDefaultMiddleware({
+    immutableCheck:false,
+    serializableCheck:false
+}).concat(middlewares)
+
+let middlewares=[
+     getmiddlewares1
+]
+
+const getMiddleware1=(store)=>next=>action=>
+{
+  if(condition)
+  {...}
+  return next(action)
+}

@@ -1,0 +1,170 @@
+1.Exporting the Pdf File using JSPDF built in method (doc.save()) (Which always Saves the file in default Downloads Folder)
+---------------------------------------------------------------------------------------------------------------------------
+
+//Program for Exporting Pdf file JSPDF built in method (doc.save())
+
+doc.save("Sample.pdf"); // Save is the built in method which saves the pdf file in the default download folder
+
+
+*********-----------------
+//Ellaborated program for exporting pdffile using JSPDF built in method (doc.save()) (Which Saves the file in default Downloads Folder) 
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
+    let Exportpdf = () => {
+      const doc = new jsPDF();
+      //Rows
+      let rows = GridRef.current.props.rowData;
+      console.log(rows)
+
+      //Columns
+      let getcols = GridRef.current.api.columnModel.displayedColumns;
+      let tablecols = [];
+      getcols.map((v) => {
+        tablecols.push({
+          header: v.colId.charAt(0).toUpperCase() + v.colId.slice(1),
+          dataKey: v.colId,
+        });
+      });
+
+      doc.autoTable({
+        columns: tablecols,
+        body: rows,
+        bodyStyles: { fillColor: [255, 255, 255], cellWidth: "auto" },
+        headStyles: {
+          fillColor: [255, 255, 255],
+          cellWidth: "auto",
+          fontStyle: "bold",
+          textColor: [0, 0, 0],
+        },
+      });
+     doc.save("Sample.pdf"); -> Built in JSPdf method for downloading the file which saves the file in default downloads folder
+    };
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+2.Exporting the PDF file using window.showSaveFilePicker (Pop up filesaver screen while downloading pdf)
+----------------------------------------------------------------------------------------------------------
+
+//Program for exporting the pdf file using window.showSaveFilePicker
+
+const doc=new JsPdf();
+
+const PdfArrBuffer=doc.output("arraybuffer"); //The "output" is the built in method of doc which contains "arraybuffer","dataurlstring" for more refer this link (https://artskydj.github.io/jsPDF/docs/jsPDF.html#output)
+
+  const options = {
+    suggestedName: "ExportPdf", // default file name
+
+    types: [
+      {
+        description: "PDF file", 
+
+        accept: {
+          "application/pdf": [".pdf"], ->Here we want to specify the mime type for more info refer this link(https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types)
+        },
+      },
+    ],
+  };
+
+  const handle = await window.showSaveFilePicker(options); // ethuthan File save panrathuku file location window display panum
+        
+          const writable = await handle.createWritable(); // Oru new sheet onu create Panrom antha sheet la write panrom
+        
+          await writable.write(PdfArrBuffer); // Generate pana ArrayBuffer ah ethula pass panrom
+        
+          await writable.close();  // Write pana sheet ai close panrom
+
+
+****-----------
+//Ellaborated program for exporting pdf file using window.showSaveFilePicker (Which popup the SaveFilePicker)
+
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
+  let Exportpdf =async () => {
+    const doc = new jsPDF();
+
+    const bodyStyles = {
+      textColor: "#000",
+      lineColor: "#000",
+      lineWidth: 0.2,
+      cellWidth:"auto",
+    };
+    const headStyles = {
+      fontStyle: "bold",
+      halign:"left",
+      cellPadding:1,
+      cellWidth:"auto"
+    };
+
+    doc.setFontSize(12);
+    doc.text("SAMPLE PDF", 90, 10);
+
+    doc.autoTable({
+      theme: "grid",
+      head: [],
+      body: [
+        ['Vessel:Toranto',"Date:2022"],
+        ["Voyage:Vishak","Terminal:Nicobar"],
+        ["Service:ST1","Bound:1"]
+      ],
+      startY:30,
+      margin:10,
+      bodyStyles
+    });
+    doc.line(10,58,200,58);
+    let pdfdata=rowdata.reduce((acc,curt)=>{ 
+      acc.push(Object.values(curt)) 
+      return acc  
+    },[]);
+
+    doc.autoTable({
+      theme: "plain",
+      head: [
+        [
+          "Athlete",
+          "Age",
+          "Country",
+          "Year",
+          "Date",
+          "Sport",
+          "Bronze",
+          "Silver",
+          "Gold",
+          "Total",
+        ],
+      ],
+      body: [...pdfdata],
+      bodyStyles: bodyStyles,
+      headStyles: headStyles,
+      didParseCell: function (data) {
+        if (data.row.raw.includes(2008)) {
+          data.cell.styles.fontStyle = "bold";
+          data.cell.styles.fillColor = [25, 118, 210];
+          data.cell.styles.textColor="white"
+        }
+      },
+      margin:10,
+  });
+
+  const PdfArrBuffer=doc.output("arraybuffer");
+
+  const options = {
+    suggestedName: "ExportPdf", // default file name
+
+    types: [
+      {
+        description: "PDF file",
+
+        accept: {
+          "application/pdf": [".pdf"],
+        },
+      },
+    ],
+  };
+
+  const handle = await window.showSaveFilePicker(options);
+  const writable = await handle.createWritable();
+  await writable.write(new Blob([PdfArrBuffer], { type: "application/pdf" })); //write data into file
+  await writable.close();
+};

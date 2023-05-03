@@ -1,0 +1,268 @@
+1.Exporting the Excel File using File Saver (Which always Saves the file in default Downloads Folder)
+-----------------------------------------------------------------------------------------------------
+//Program for Exporting Excel using FileSaver (default download folder)
+
+  workbook.xlsx.writeBuffer().then(buffer => { -> The writeBuffer is the built in method in xlsx which returns the buffer element
+    const blob = new Blob([buffer],  ->  The blob is the constructor which accepts the buffered element only in array format
+    {
+        type:'application/vnd.openxmlformats officedocument.spreadsheetml.sheet;charset=UTF-8' -> Here we want to specify the mime type for more info refer this link(https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types)
+    })  
+    FileSaver.saveAs(blob, fileSaverName); -> The saveAs is the built in method of filesaver here we pass the blob and filesaverName which accepts and download the excel file as in default Download folder in the system
+ })
+
+*********-----------------
+//Ellaborated program for exporting excel using Filesaver (Which Saves the file in default Downloads Folder)
+
+import { Workbook } from "exceljs";
+import FileSaver from "file-saver";
+
+function ExcelJS()
+{
+const tankSequenceTemplateBodyDataArr=[
+    {
+        stankcategory:"3",
+        stankname:"Oil Tank",
+        maxper:51,
+        priority:"High"
+    },
+    {
+        stankcategory:"5",
+        stankname:"Fluid Tank",
+        maxper:13,
+        priority:"Low"
+    },
+    {
+        stankcategory:"15",
+        stankname:"Gas Tank",
+        maxper:43,
+        priority:"Medium"
+    }
+];
+
+const tankSequenceTemplateHeadersDataArr=[
+    {
+        header:"TankCategory",
+        key:"stankcategory",
+        width:20
+    },
+    {
+        header:"TankName",
+        key:"stankname",
+        width:20
+    },
+    {
+        header:"Utilization_Ratio",
+        key:"maxper",
+        width:20
+    },
+    {
+        header:"Priority",
+        key:"priority",
+        width:20
+    }
+];
+const tankSequenceWorksheetName = 'Tank Sequnce Template';
+const tankSequenceFileSaverName = 'Tank Sequence Template.xlsx'; 
+
+const DownloadExcelSingleTable=({headersDataArr,bodyDataArr,
+    worksheetName,fileSaverName,
+    headerBackgroundColor = '000099',
+    headerBorderTopColor = '000000',
+    headerBorderLeftColor = '000000',
+    headerBorderBottomColor = '000000',
+    headerBorderRightColor = '000000',
+    headerFontColor = 'ffffff',
+    bodyBorderTopColor="F08080",
+    headerFontSize = 13
+})=>
+{
+    console.log("Downloading...");
+    const workbook=new Workbook();
+    const worksheet = workbook.addWorksheet(worksheetName);
+    worksheet.columns=headersDataArr;
+
+    //Headers
+    const headerStyling=worksheet.getRow(1);
+    headerStyling.eachCell(item=>{
+        item.fill={
+            type:"pattern",
+            pattern:"solid",
+            fgColor:{argb:headerBackgroundColor}
+        };
+        item.border={
+             top:{style:'thin',color:{argb:headerBorderTopColor}},
+             left:{style:"thin",color:{argb:headerBorderLeftColor}},
+             bottom:{style:"thin",color:{argb:headerBorderBottomColor}},
+             right:{style:"thin",color:{argb:headerBorderRightColor}}
+        };
+        item.font={
+            color:{argb:headerFontColor},
+            size:headerFontSize
+        };
+        item.alignment={
+            vertical: 'left',
+            horizontal: 'left'
+        };
+    })
+    
+    //Body
+    bodyDataArr.forEach(obj=>{
+        worksheet.addRow(obj).alignment={
+            vertical:"left",
+            horizontal:"left"
+        }
+    })
+
+//Excel Js default download using FileSaver
+    workbook.xlsx.writeBuffer().then(buffer => {   
+     const blob = new Blob([buffer], 
+    {
+        type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+     })  
+     FileSaver.saveAs(blob, fileSaverName); 
+})
+}
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+2.Exporting the Excel File using window showSaveFilePicker
+
+//Program for Exporting Excel using window.showSaveFilePicker
+
+ workbook.xlsx.writeBuffer().then(async buffer => { // The writeBuffer is the built in method in xlsx which returns the buffer element 
+      const options = {
+        suggestedName: "Tank Sequnce Template", // Here we want to mention the FileName that we want to save the file
+        types: [
+          {
+            description: "Excel file",
+            accept: {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                [".xlsx"], // Here we want to specify the mime type for more info refer this link(https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types)
+            },
+          },
+        ],
+      }; 
+          const handle = await window.showSaveFilePicker(options); // ethuthan File save panrathuku file location window display panum
+        
+          const writable = await handle.createWritable(); // Oru new sheet onu create Panrom antha sheet la write panrom
+        
+          await writable.write(buffer); // function Return panra buufer ah insert panrom
+        
+          await writable.close();  // Write pana sheet ai close panrom
+    });
+
+
+*********-----------------
+//Ellaborated program for exporting excel using window.showSaveFilePicker (Which popup the SaveFilePicker)
+
+import { Workbook } from "exceljs";
+import FileSaver from "file-saver";
+
+function ExcelJS()
+{
+const tankSequenceTemplateBodyDataArr=[
+    {
+        stankcategory:"3",
+        stankname:"Oil Tank",
+        maxper:51,
+        priority:"High"
+    },
+    {
+        stankcategory:"5",
+        stankname:"Fluid Tank",
+        maxper:13,
+        priority:"Low"
+    },
+    {
+        stankcategory:"15",
+        stankname:"Gas Tank",
+        maxper:43,
+        priority:"Medium"
+    }
+];
+
+const tankSequenceTemplateHeadersDataArr=[
+    {
+        header:"TankCategory",
+        key:"stankcategory",
+        width:20
+    },
+    {
+        header:"TankName",
+        key:"stankname",
+        width:20
+    },
+    {
+        header:"Utilization_Ratio",
+        key:"maxper",
+        width:20
+    },
+    {
+        header:"Priority",
+        key:"priority",
+        width:20
+    }
+];
+const tankSequenceWorksheetName = 'Tank Sequnce Template';
+const tankSequenceFileSaverName = 'Tank Sequence Template.xlsx'; 
+
+const DownloadExcelSingleTable=({headersDataArr,bodyDataArr,
+    worksheetName,fileSaverName,
+    headerBackgroundColor = '000099',
+    headerBorderTopColor = '000000',
+    headerBorderLeftColor = '000000',
+    headerBorderBottomColor = '000000',
+    headerBorderRightColor = '000000',
+    headerFontColor = 'ffffff',
+    bodyBorderTopColor="F08080",
+    headerFontSize = 13
+})=>
+{
+    console.log("Downloading...");
+    const workbook=new Workbook();
+    const worksheet = workbook.addWorksheet(worksheetName);
+    worksheet.columns=headersDataArr;
+
+    //Headers
+    const headerStyling=worksheet.getRow(1);
+    headerStyling.eachCell(item=>{
+        item.fill={
+            type:"pattern",
+            pattern:"solid",
+            fgColor:{argb:headerBackgroundColor}
+        };
+        item.border={
+             top:{style:'thin',color:{argb:headerBorderTopColor}},
+             left:{style:"thin",color:{argb:headerBorderLeftColor}},
+             bottom:{style:"thin",color:{argb:headerBorderBottomColor}},
+             right:{style:"thin",color:{argb:headerBorderRightColor}}
+        };
+        item.font={
+            color:{argb:headerFontColor},
+            size:headerFontSize
+        };
+        item.alignment={
+            vertical: 'left',
+            horizontal: 'left'
+        };
+    })
+    
+    //Body
+    bodyDataArr.forEach(obj=>{
+        worksheet.addRow(obj).alignment={
+            vertical:"left",
+            horizontal:"left"
+        }
+    })
+
+//Excel Js default download using FileSaver
+    workbook.xlsx.writeBuffer().then(buffer => {   
+     const blob = new Blob([buffer], 
+    {
+        type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+     })  
+     FileSaver.saveAs(blob, fileSaverName); 
+})
+}
+-----------------------------------------------------------------------------------------------------
